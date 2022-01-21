@@ -2,6 +2,7 @@ import  './Table.scss';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from '../Container/Container.js';
+import Loader from '../Loader/Loader.js';
 
 function Table({fetchTopDebts, topDebts, loading}) { 
 
@@ -25,9 +26,9 @@ function Table({fetchTopDebts, topDebts, loading}) {
   }
   return ( 
     <Container><div className="tableContainer">
-    { loading.active ? <h2>Trwa wczytywanie danych...</h2> : '' }
+    { loading.active ? <Loader /> : '' }
     { loading.error ? <h2>Wystąpił błąd podczas pobierania danych. Prosimy spróbować później.</h2> : ''}
-    { topDebts.length === 0 ? <h2>Nie znaleziono żadnych danych.</h2> : ''}
+    { !loading.active && !loading.error && topDebts.length === 0 ? <h2>Nie znaleziono żadnych danych.</h2> : ''}
     { !loading.active && !loading.error && topDebts.length > 0 ?
        <table>
            <thead>

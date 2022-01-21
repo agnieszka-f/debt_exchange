@@ -5,6 +5,7 @@ export const getTopDebts = ({debts}) => debts.data;
 export const getLoading = ({debts}) => debts.loading;
 
 export const getDebtsCount = ({debts}) => debts.count;
+export const getLoadingCount = ({debts}) => debts.loadingCount;
 
 /* action name creator */
 const reducerName = 'debts';
@@ -16,14 +17,18 @@ const FETCH_SUCCESS = createActionName('FETCH_SUCCESS');
 const FETCH_ERROR = createActionName('FETCH_ERROR');
 
 const FETCH_COUNT = createActionName('FETCH_COUNT');
+const FETCH_START_COUNT = createActionName('FETCH_START');
+const FETCH_ERROR_COUNT = createActionName('FETCH_ERROR');
 /* action creators */
 export const fetchStarted = payload => ({ payload, type: FETCH_START });
 export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = payload => ({ payload, type: FETCH_ERROR });
 
 export const fetchCount = payload => ({ payload, type: FETCH_COUNT });
+export const fetchStartedCount = payload => ({ payload, type: FETCH_START_COUNT });
+export const fetchErrorCount = payload => ({ payload, type: FETCH_ERROR_COUNT });
 /* thunk creators */
-export const fetchTopDebts = () => {
+export const fetchTopDebts = () => { 
   return (dispatch, getState) => { 
     dispatch(fetchStarted());
     
@@ -43,7 +48,7 @@ export const fetchTopDebts = () => {
 
 export const fetchDebtsCount = () => {
   return (dispatch, getState) => { 
-    dispatch(fetchStarted());
+    dispatch(fetchStartedCount());
     
     if(typeof getState.debts == 'undefined' || typeof getState.debts.count != 'number'){
         
@@ -53,30 +58,30 @@ export const fetchDebtsCount = () => {
         dispatch(fetchCount(res.data));
       })
       .catch(err => {
-        dispatch(fetchError(err.message || true));
+        dispatch(fetchErrorCount(err.message || true));
       });
     }
   };
 };
-export const getSearchDebts = (data) => { 
-  console.log('*',data);
-  return (dispatch) => { 
-    dispatch(fetchStarted());
-    if(data !== ''){  
-      Axios
-      .post('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetFilteredDebts', data)
-      .then(res => {
-        dispatch(fetchSuccess(res.data));
-      })
-      .catch(err => {
-        dispatch(fetchError(err.message || true));
-      });
-    } 
-  };
+export const fetchFilteredDebts = (data) => { 
+  
+  if(data != ''){ 
+    return (dispatch) => { 
+      dispatch(fetchStarted());
+        Axios
+        .post('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetFilteredDebts', {search: data})
+        .then(res => {
+          dispatch(fetchSuccess(res.data));
+        })
+        .catch(err => {
+          dispatch(fetchError(err.message || true));
+        });
+    };
+ } else return fetchTopDebts();
 };
 /* reducer */
-export const reducer = (statePart = [], action = {}) => {
-  switch (action.type) {
+export const reducer = (statePart = [], action = {}) => { console.log(action);
+  switch (action.type) { 
     case FETCH_START: { 
       return {
         ...statePart,
@@ -96,6 +101,15 @@ export const reducer = (statePart = [], action = {}) => {
         data: action.payload,
       };
     }
+    case FETCH_START_COUNT: { 
+      return {
+        ...statePart,
+        loadingCount: {
+          active: true,
+          error: false,
+        },
+      };
+    }
     case FETCH_COUNT: { 
       return { 
         ...statePart,
@@ -110,6 +124,15 @@ export const reducer = (statePart = [], action = {}) => {
       return {
         ...statePart,
         loading: {
+          active: false,
+          error: action.payload,
+        },
+      };
+    }
+    case FETCH_ERROR_COUNT: {
+      return {
+        ...statePart,
+        loadingCount: {
           active: false,
           error: action.payload,
         },

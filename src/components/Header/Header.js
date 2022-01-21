@@ -2,8 +2,9 @@ import  './Header.scss';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Container from '../Container/Container.js';
+import Loader from '../Loader/Loader.js';
 
-function Header({debtsCount,fetchDebtsCount, loading, getSearchDebts}) { 
+function Header({debtsCount,fetchDebtsCount, loading, getFilteredDebts}) { 
     React.useEffect(() => {
         const getResult = async () =>{
           await fetchDebtsCount();
@@ -18,16 +19,11 @@ function Header({debtsCount,fetchDebtsCount, loading, getSearchDebts}) {
     }
     
     const handleClick = () => {
-        getSearchDebts({search: searchString});
-        setSearchString('');
+        getFilteredDebts(searchString);
     }
     
   return (
     <div className="header"><Container>
-    { loading.active ? <h2>Trwa wczytywanie danych...</h2> : '' }
-    { loading.error ? <h2>Wystąpił błąd podczas pobierania danych. Prosimy spróbować później.</h2> : ''}
-    {
-        !loading.active && !loading.error && typeof debtsCount === 'number' ? 
         <div className="headerContainer">
             <div className="leftContainer">
               <p>Podaj numer sprawy, nazwę lub dłużnika</p>
@@ -38,10 +34,13 @@ function Header({debtsCount,fetchDebtsCount, loading, getSearchDebts}) {
             </div>
             <div className="rightContainer">
                 <p className="count">Całkowita ilość spraw</p>
-                <p className="count white">{debtsCount}</p>
+                { loading.active ? <Loader /> : '' }
+                { loading.error ? <p p className="count white">Wystąpił błąd podczas pobierania danych. Prosimy spróbować później.</p> : ''}
+                { !loading.active && !loading.error && typeof debtsCount === 'number' ? 
+                <p className="count white">{debtsCount}</p> : '' }
+               
             </div>
-        </div> : ''
-    }
+        </div> 
     </Container></div>
   );
 }
@@ -50,7 +49,7 @@ Header.propTypes = {
   debtsCount: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   fetchDebtsCount: PropTypes.func,
   loading: PropTypes.shape({active: PropTypes.bool, error: PropTypes.bool }),
-  getSearchDebts: PropTypes.func,
+  getFilteredDebts: PropTypes.func,
 }
 
 export default Header;

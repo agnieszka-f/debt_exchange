@@ -6,5 +6,9 @@ export const initialState = {
         error: false,
       },
       count: {},
+      loadingCount: {
+        active: false,
+        error: false,
+      },
     },
   };
