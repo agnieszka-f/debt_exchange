@@ -7,7 +7,7 @@ import { reducer as debtsReducer } from './debtsRedux';
 
 // define reducers
 const reducers = {
-    debts: debtsReducer,
+  debts: debtsReducer,
 };
 
 // add blank reducers for initial state properties without reducers

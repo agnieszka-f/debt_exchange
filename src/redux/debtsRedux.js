@@ -35,13 +35,13 @@ export const fetchTopDebts = () => {
     if(typeof getState.debts == 'undefined' || typeof getState.debts.data == 'undefined' || getState.debts.data.length < 1){
         
       Axios
-      .get('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetTopDebts')
-      .then(res => {
-        dispatch(fetchSuccess(res.data));
-      })
-      .catch(err => {
-        dispatch(fetchError(err.message || true));
-      });
+        .get('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetTopDebts')
+        .then(res => {
+          dispatch(fetchSuccess(res.data));
+        })
+        .catch(err => {
+          dispatch(fetchError(err.message || true));
+        });
     }
   };
 };
@@ -53,13 +53,13 @@ export const fetchDebtsCount = () => {
     if(typeof getState.debts == 'undefined' || typeof getState.debts.count != 'number'){
         
       Axios
-      .get('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetDebtsCount')
-      .then(res => {
-        dispatch(fetchCount(res.data));
-      })
-      .catch(err => {
-        dispatch(fetchErrorCount(err.message || true));
-      });
+        .get('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetDebtsCount')
+        .then(res => {
+          dispatch(fetchCount(res.data));
+        })
+        .catch(err => {
+          dispatch(fetchErrorCount(err.message || true));
+        });
     }
   };
 };
@@ -68,7 +68,7 @@ export const fetchFilteredDebts = (data) => {
   if(data != ''){ 
     return (dispatch) => { 
       dispatch(fetchStarted());
-        Axios
+      Axios
         .post('http://rekrutacja-webhosting.it.krd.pl/api/Recruitment/GetFilteredDebts', {search: data})
         .then(res => {
           dispatch(fetchSuccess(res.data));
@@ -77,7 +77,7 @@ export const fetchFilteredDebts = (data) => {
           dispatch(fetchError(err.message || true));
         });
     };
- } else return fetchTopDebts();
+  } else return fetchTopDebts();
 };
 /* reducer */
 export const reducer = (statePart = [], action = {}) => { console.log(action);

@@ -3,29 +3,29 @@ import React from 'react';
 
 function Loader() {
 
-const [big, setBig] = React.useState(0);
+  const [big, setBig] = React.useState(0);
 
-const handleSetBig = () => { 
-  if(big >= 0 && big < 5) setBig(big+1);
-  else setBig(0);
-}
+  const handleSetBig = () => { 
+    if(big >= 0 && big < 5) setBig(big+1);
+    else setBig(0);
+  };
 
-const handleAddBig = (index) =>{ 
+  const handleAddBig = (index) =>{ 
     if( index === big) return 'big';
     else return '';
-  }
+  };
 
-React.useEffect(()=>{ 
+  React.useEffect(()=>{ 
     let timer =  setTimeout(()=>handleSetBig(), 400);
     return () => {
-        clearTimeout(timer);
-      };
-    });
+      clearTimeout(timer);
+    };
+  });
 
-return (
+  return (
     <div className="loader">
       {
-          [1,2,3,4,5,6].map((item, index) =><div className={`loaderItem + ${handleAddBig(index)}`} key={item}></div>)
+        [1,2,3,4,5,6].map((item, index) =><div className={`loaderItem + ${handleAddBig(index)}`} key={item}></div>)
       }
     </div>
   );
